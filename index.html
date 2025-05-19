@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Equipo de Sonido - Fixture Horizontal</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('Img Jea.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 2rem auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #000;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eee;
+    }
+
+    .youtube-section {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .youtube-link {
+      display: inline-block;
+      margin: 1rem;
+      border: 2px solid white;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+
+    .youtube-link:hover {
+      transform: scale(1.05);
+    }
+
+    .youtube-link img {
+      display: block;
+      width: 320px;
+      height: auto;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Equipo de Sonido</h1>
+
+    <div class="table-wrapper">
+      <table id="fixtureTable">
+        <thead>
+          <tr id="headerRow">
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="fixtureBody">
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SECCIÓN DE VIDEOS -->
+    <div class="youtube-section">
+      <h2>Videos para ir aprendiendo</h2>
+
+      <div class="youtube-link">
+        <a href="https://www.youtube.com/watch?v=O6giWHc9ZGg" target="_blank">
+          <img src="https://img.youtube.com/vi/O6giWHc9ZGg/0.jpg
+" alt="Video 1">
+        </a>
+      </div>
+
+      <div class="youtube-link">
+        <a href="https://www.youtube.com/watch?v=9imkoLiLCGM" target="_blank">
+          <img src="https://img.youtube.com/vi/9imkoLiLCGM/0.jpg" alt="Video 2">
+        </a>
+      </div>
+    </div>
+
+    <div class="youtube-section">
+      <h2>Más videos para aprender</h2>
+
+      <div class="youtube-link">
+        <a href="https://www.youtube.com/watch?v=evDC9PJcpoQ&t=860s" target="_blank">
+          <img src="https://img.youtube.com/vi/evDC9PJcpoQ&t/0.jpg" alt="Video 3">
+        </a>
+      </div>
+
+      <div class="youtube-link">
+        <a href="https://www.youtube.com/watch?v=1GhAyXxQDbk" target="_blank">
+          <img src="https://img.youtube.com/vi/1GhAyXxQDbk/0.jpg" alt="Video 4">
+        </a>
+      </div>
+
+      <div class="youtube-link">
+        <a href="https://www.youtube.com/watch?v=r5hD7zJt6Xo&t=103s" target="_blank">
+          <img src="https://img.youtube.com/vi/r5hD7zJt6Xo&t=103s/0.jpg" alt="Video 5">
+        </a>
+
+      </div>
+
+      <script>
+        function generarFixture(mesInicio, mesFin, anio) {
+          const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+          const fixturePorMes = {};
+
+          for (let mes = mesInicio; mes <= mesFin; mes++) {
+            const fechaInicio = new Date(anio, mes - 1, 1);
+            const fechaFin = new Date(anio, mes, 0);
+            fixturePorMes[mes] = [];
+
+            for (let d = new Date(fechaInicio); d <= fechaFin; d.setDate(d.getDate() + 1)) {
+              const diaSemana = d.getDay();
+              const nombreDia = diasSemana[diaSemana];
+              const fechaTexto = d.toISOString().split("T")[0];
+
+              if (nombreDia === "Miércoles") {
+                let sonidista = "Choque";
+
+                if (
+                  (mes === 7 && d.getDate() >= 15) ||
+                  mes === 8
+                ) {
+                  sonidista = "Tobías";
+                }
+
+                fixturePorMes[mes].push(`${fechaTexto} (${sonidista})`);
+              }
+
+              else if (nombreDia === "Sábado") {
+                fixturePorMes[mes].push(`${fechaTexto} (Danilo)`);
+              }
+            }
+          }
+
+          return fixturePorMes;
+        }
+
+        function construirTabla() {
+          const fixture = generarFixture(5, 12, 2025);
+          const meses = Object.keys(fixture);
+          const headerRow = document.getElementById("headerRow");
+          const tbody = document.getElementById("fixtureBody");
+
+          const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+            "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+          meses.forEach(mes => {
+            const th = document.createElement("th");
+            th.textContent = nombresMeses[mes - 1];
+            headerRow.appendChild(th);
+          });
+
+          const maxFilas = Math.max(...meses.map(m => fixture[m].length));
+
+          for (let i = 0; i < maxFilas; i++) {
+            const tr = document.createElement("tr");
+            const tdFecha = document.createElement("td");
+            tr.appendChild(tdFecha);
+
+            meses.forEach(mes => {
+              const td = document.createElement("td");
+              td.textContent = fixture[mes][i] || "-";
+              tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+          }
+        }
+
+        construirTabla();
+      </script>
+
+</body>
+
+</html>
